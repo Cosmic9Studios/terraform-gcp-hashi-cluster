@@ -1,0 +1,32 @@
+name: build
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    container: hashicorp/terraform:light
+    steps:
+    - uses: actions/checkout@v1
+    - name: Validate
+      run: |
+        terraform validate
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Use Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+    
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        npm install -g semantic-release@15.13.24 @semantic-release/commit-analyzer @semantic-release/github
+        npx semantic-release -b master
