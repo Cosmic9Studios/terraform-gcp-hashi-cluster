@@ -10,6 +10,12 @@ jobs:
     container: hashicorp/terraform:light
     steps:
     - uses: actions/checkout@v1
+    - name: Install Godaddy Plugin
+      run: | 
+        apk add curl
+        apk add --no-cache libc6-compat
+        curl -s https://raw.githubusercontent.com/n3integration/terraform-godaddy/master/install.sh | sh
+
     - name: Validate
       run: |
         terraform init
