@@ -1,7 +1,3 @@
-variable "environment" {
-    type = string
-}
-
 variable "project" {
     type = string
 }
@@ -15,7 +11,14 @@ variable "account_email" {
   type = string
 }
 
-# Example: projects/project_name/global/images/hashi-client-2019-09-29
-variable "machine_image" {
-  type = string
+variable "ssh_username" {
+    type = string
+}
+
+variable "network_name" {
+    default = "default-network"
+}
+
+variable "firewall_name" {
+    default = "default-firewall"
 }

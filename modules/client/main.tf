@@ -29,7 +29,7 @@ resource "google_compute_instance_template" "default" {
   description = var.desc
 
   disk {
-    source_image = var.machine_image
+    source_image = "projects/${var.project}/global/images/${var.machine_image}"
     auto_delete  = true
     boot         = true
   }
@@ -72,10 +72,12 @@ resource "google_compute_instance_group_manager" "default" {
     type = "PROACTIVE"
     minimal_action = "REPLACE"
     min_ready_sec = 120
+    max_unavailable_fixed = 1
+    max_surge_fixed = 1
   }
 
   version {
-    name              = var.environment
+    name              = "default"
     instance_template = google_compute_instance_template.default.self_link
   }
 
