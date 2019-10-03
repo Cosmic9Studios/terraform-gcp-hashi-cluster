@@ -17,6 +17,9 @@ jobs:
         curl -s https://raw.githubusercontent.com/n3integration/terraform-godaddy/master/install.sh | sh
 
     - name: Validate
+      env:
+        GODADDY_API_KEY: ${{ secrets.GODADDY_API_KEY }}
+        GODADDY_API_SECRET: ${{ secrets.GODADDY_API_SECRET }}
       run: |
         terraform init
         terraform validate

@@ -1,6 +1,10 @@
 # terraform-gcp-hashi-cluster
 A terraform module to setup hashicorp clients and servers on google cloud (Consul & Nomad)
 
+# MUST HAVES
+    * GCP Account 
+    * Godaddy Account (This may change in the future if requested)
+
 # How to use (Terraform)
 
 variables: 
