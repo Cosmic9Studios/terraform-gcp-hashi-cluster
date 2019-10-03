@@ -5,7 +5,7 @@ on:
       - '*'
 
 jobs:
-  validate_and_release:
+  validate:
     runs-on: ubuntu-latest
     container: hashicorp/terraform:light
     steps:
@@ -23,15 +23,19 @@ jobs:
       run: |
         terraform init
         terraform validate
-    
+  
+  release:
+    needs: validate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@v1
     - name: Use Node
-      if: github.ref == 'refs/heads/master'
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
     
     - name: Release
-      if: github.ref == 'refs/heads/master'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
