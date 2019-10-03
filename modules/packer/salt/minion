@@ -1,0 +1,11 @@
+file_roots:
+    base:
+        - /srv/salt/
+    client: 
+        - /srv/salt/
+    server:
+        - /srv/salt/
+
+default_top: base
+state_top_saltenv: base
+# top_file_merging_strategy: same

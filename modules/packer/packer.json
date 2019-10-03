@@ -1,0 +1,61 @@
+{
+    "variables": {
+        "version": "2.1.0"
+    },
+    "builders": [
+        {
+            "name": "server",
+            "type": "googlecompute",
+            "account_file": "{{user `account_json_path`}}/account.json",
+            "project_id": "{{user `project`}}",
+            "source_image": "centos-7-v20190326",
+            "ssh_username": "{{user `ssh_username`}}",
+            "instance_name": "hashi-server-{{user `image_suffix`}}",
+            "image_name": "hashi-server-{{user `image_suffix`}}",
+            "image_family": "hashi-server",
+            "zone": "us-central1-a",
+            "disable_default_service_account": true
+        },
+        {
+            "name": "client",
+            "type": "googlecompute",
+            "account_file": "account.json",
+            "project_id": "{{user `project`}}",
+            "source_image": "centos-7-v20190326",
+            "ssh_username": "{{user `ssh_username`}}",
+            "instance_name": "hashi-client-{{user `image_suffix`}}",
+            "image_name": "hashi-client-{{user `image_suffix`}}",
+            "image_family": "hashi-client",
+            "zone": "us-central1-a",
+            "disable_default_service_account": true
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sudo yum install -y epel-release",
+                "sudo yum install -y https://repo.saltstack.com/yum/redhat/salt-repo-latest-2.el7.noarch.rpm",
+                "sudo yum clean expire-cache",
+                "sudo yum install -y salt-minion",
+                "sudo systemctl start salt-minion",
+                "sudo mkdir -p /srv/salt/files /etc/salt /etc/consul.d /etc/nomad.d /opt/consul /etc/fabio"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "./salt/",
+            "destination": "/tmp"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo mv /tmp/minion /etc/salt/",
+                "sudo mv /tmp/files/* /srv/salt/files",
+                "sudo mv /tmp/*.sls /srv/salt/",
+                "sudo ls /srv/salt",
+                "sudo salt-call --local state.apply saltenv={{build_name}} --retcode-passthrough -l info"
+            ]
+        }
+    ]
+}

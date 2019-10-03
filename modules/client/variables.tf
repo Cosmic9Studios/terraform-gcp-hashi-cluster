@@ -17,10 +17,6 @@ variable "project" {
   type = string
 }
 
-variable "environment" {
-  type = string
-}
-
 # Example: projects/project_name/global/images/hashi-client-2019-09-29
 variable "machine_image" {
   type = string

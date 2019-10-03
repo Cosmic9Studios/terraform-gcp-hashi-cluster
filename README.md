@@ -1,6 +1,10 @@
 # terraform-gcp-hashi-cluster
 A terraform module to setup hashicorp clients and servers on google cloud (Consul & Nomad)
 
+# MUST HAVES
+    * GCP Account 
+    * Godaddy Account (This may change in the future if requested)
+
 # How to use (Terraform)
 
 variables: 
@@ -8,8 +12,8 @@ variables:
     project = The name of the GCP project
     domains = The domains used to access the machines (Must be Godaddy)
     account_email = The service account email (Ex: account@projectname.iam.gserviceaccount.com)
-    machine_image = The path to the base machine image (Ex: projects/project_name/global/images/hashi-client-2019-09-29) 
+    ssh_username = The username used to ssh into the machine
 
 # How to use (Packer)
 
-Coming Soon
+Use the terraform module to automatically run packer script

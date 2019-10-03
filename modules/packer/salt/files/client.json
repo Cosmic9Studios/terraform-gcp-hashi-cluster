@@ -1,0 +1,13 @@
+{
+    "enable_script_checks": true,
+    "datacenter": "east-gcp",
+    "log_level": "INFO",
+    "server": false,
+    "data_dir": "/opt/consul",
+    "retry_join": [
+        "provider=gce tag_value=consul-join"
+    ],
+    "ui": true,
+    "client_addr": "0.0.0.0",
+    "bind_addr": "{{ GetPrivateIP }}"
+}
