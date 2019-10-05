@@ -52,6 +52,7 @@ variable "tags" {
   default = ["allow-icmp", "consul-join"]
 }
 
+# Best Practice: https://cloud.google.com/compute/docs/access/service-accounts?hl=en_US#accesscopesiam
 variable "account_scopes" {
-  default = ["compute-ro"]
+  default = ["cloud-platform"]
 }
