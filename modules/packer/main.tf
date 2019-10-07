@@ -2,10 +2,16 @@ locals {
     file_hash = filemd5("${path.module}/packer.json")
 }
 
+data "archive_file" "init" {
+  type        = "zip"
+  source_dir = "./"
+  output_path = "data.zip"
+}
+
 resource "null_resource" "packer_build" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers = {
-    packer_file = local.file_hash
+    src_hash = data.archive_file.init.output_sha
   }
 
   provisioner "local-exec" {

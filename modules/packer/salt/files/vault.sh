@@ -1,0 +1,1 @@
+nomad agent -config=/etc/vault.d

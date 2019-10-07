@@ -10,3 +10,4 @@
 .packer
 account.json
 test/*
+.vagrant

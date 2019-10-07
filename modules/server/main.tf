@@ -35,7 +35,10 @@ resource "google_compute_instance_template" "default" {
     create_before_destroy = true
   }
 
-  metadata_startup_script = "${file("${path.module}/${var.startup_script_path}")}"
+  metadata_startup_script = <<EOT
+    sudo pm2 start /scripts/nomad.sh
+    sudo pm2 start /scripts/consul.sh
+  EOT
 }
 
 resource "google_compute_instance_group_manager" "default" {

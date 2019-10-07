@@ -55,7 +55,14 @@ resource "google_compute_instance_template" "default" {
     create_before_destroy = true
   }
 
-  metadata_startup_script = "${file("${path.module}/${var.startup_script_path}")}"
+  metadata_startup_script = <<EOT
+    sudo pm2 start /scripts/nomad.sh --wait-ready --listen-timeout 15000
+    sudo pm2 start /scripts/consul.sh --wait-ready --listen-timeout 15000
+    sudo pm2 start /scripts/vault.sh --wait-ready --listen-timeout 15000
+    sudo nomad run /files/fabio.nomad
+    sudo vault operator init -recovery-shares=1 -recovery-threshold=1
+    export GOOGLE_PROJECT=${var.project}
+  EOT
 }
 
 resource "google_compute_global_address" "global_ip" {
