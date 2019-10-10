@@ -1,0 +1,3 @@
+sudo docker ps -a (Get the container id)
+sudo docker exec -it {{ container_id }} /bin/sh 
+vault operator init -recovery-shares=1 -recovery-threshold=1

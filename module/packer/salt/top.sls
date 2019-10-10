@@ -4,7 +4,6 @@ client:
     - docker
     - consul
     - nomad
-    - vault
 
 server:
   '*': 

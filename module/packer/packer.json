@@ -6,7 +6,7 @@
         {
             "name": "server",
             "type": "googlecompute",
-            "account_file": "{{user `account_json_path`}}/account.json",
+            "account_file": "{{user `account_json_path`}}",
             "project_id": "{{user `project`}}",
             "source_image": "centos-7-v20190326",
             "ssh_username": "{{user `ssh_username`}}",
@@ -19,7 +19,7 @@
         {
             "name": "client",
             "type": "googlecompute",
-            "account_file": "account.json",
+            "account_file": "{{user `account_json_path`}}",
             "project_id": "{{user `project`}}",
             "source_image": "centos-7-v20190326",
             "ssh_username": "{{user `ssh_username`}}",

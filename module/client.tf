@@ -1,14 +1,3 @@
-provider "google" {
-  project = var.project
-  zone    = var.zone
-}
-
-provider "google-beta" {
-  project = var.project
-  zone    = var.zone
-}
-
-provider "godaddy" {}
 
 locals {
     services = {
@@ -24,22 +13,21 @@ locals {
     }
 }
 
-resource "google_compute_instance_template" "default" {
+resource "google_compute_instance_template" "client" {
   name_prefix = "hashi-client"
-  description = var.desc
+  description = "Created with Terraform"
 
   disk {
-    source_image = "projects/${var.project}/global/images/${var.machine_image}"
+    source_image = "${var.project}/hashi-client-${data.archive_file.init.output_md5}"
     auto_delete  = true
     boot         = true
   }
 
   tags         = var.tags
-  labels       = var.labels
-  machine_type = var.machine_type
+  machine_type = var.client_machine_type
 
   network_interface {
-    network = var.network_name
+    network = google_compute_network.default.name
     access_config {
       nat_ip       = ""
       network_tier = var.network_tier
@@ -58,22 +46,20 @@ resource "google_compute_instance_template" "default" {
   metadata_startup_script = <<EOT
     sudo pm2 start /scripts/nomad.sh --wait-ready --listen-timeout 15000
     sudo pm2 start /scripts/consul.sh --wait-ready --listen-timeout 15000
-    sudo pm2 start /scripts/vault.sh --wait-ready --listen-timeout 15000
-    sudo nomad run /files/fabio.nomad
-    sudo vault operator init -recovery-shares=1 -recovery-threshold=1
-    export GOOGLE_PROJECT=${var.project}
   EOT
+
+  depends_on = [null_resource.packer_build]
 }
 
 resource "google_compute_global_address" "global_ip" {
   name = "global-address"
 }
 
-resource "google_compute_instance_group_manager" "default" {
+resource "google_compute_instance_group_manager" "client" {
   provider           = "google-beta"
   base_instance_name = "hashi-client"
   name               = "hashi-client-group-manager"
-  target_size        = var.target_size
+  target_size        = var.client_target_size
 
   update_policy {
     type = "PROACTIVE"
@@ -85,7 +71,7 @@ resource "google_compute_instance_group_manager" "default" {
 
   version {
     name              = "default"
-    instance_template = google_compute_instance_template.default.self_link
+    instance_template = google_compute_instance_template.client.self_link
   }
 
   wait_for_instances = true
@@ -97,6 +83,8 @@ resource "google_compute_instance_group_manager" "default" {
           port = named_port.value["port"]
       }
   }
+
+  depends_on = [google_compute_instance_group_manager.server]
 }
 
 resource "google_compute_managed_ssl_certificate" "client_cert" {
@@ -114,7 +102,22 @@ resource "godaddy_domain_record" "default" {
   count = length(var.domains)
   domain      = var.domains[count.index]
   addresses   = [google_compute_global_address.global_ip.address]
-  nameservers = ["ns13.domaincontrol.com", "ns14.domaincontrol.com"]
+
+  record {
+    name = "www"
+    type = "CNAME"
+    data = "@"
+    ttl = 3600
+    priority = 0
+  }
+
+  record {
+    name = "_domainconnect"
+    type = "CNAME"
+    data = "_domainconnect.gd.domaincontrol.com"
+    ttl = 3600
+    priority = 0
+  }
 }
 
 resource "google_compute_health_check" "services" {
@@ -134,7 +137,7 @@ resource "google_compute_backend_service" "services" {
   port_name     = each.key
   protocol      = "HTTP"
   backend {
-    group = "${google_compute_instance_group_manager.default.instance_group}"
+    group = "${google_compute_instance_group_manager.client.instance_group}"
   }
 }
 

@@ -5,8 +5,6 @@ nomad_files:
     - names:
       - /etc/nomad.d/{{ saltenv }}.hcl:
         - source: salt://files/{{ saltenv }}.hcl
-      - /files/fabio.nomad:
-        - source: salt://files/fabio.nomad
       - /scripts/nomad.sh:
         - source: salt://files/nomad.sh
 
