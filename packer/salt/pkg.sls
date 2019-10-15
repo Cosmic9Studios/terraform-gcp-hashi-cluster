@@ -4,7 +4,7 @@ npm:
 unzip: 
   pkg.latest
 
-pm2:
+pm2@3.5.1:
   npm.installed:
     - require:
       - pkg: npm
