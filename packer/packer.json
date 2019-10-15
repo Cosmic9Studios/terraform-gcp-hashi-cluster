@@ -1,7 +1,4 @@
 {
-    "variables": {
-        "version": "2.1.0"
-    },
     "builders": [
         {
             "name": "server",
@@ -39,7 +36,7 @@
                 "sudo yum clean expire-cache",
                 "sudo yum install -y salt-minion",
                 "sudo systemctl start salt-minion",
-                "sudo mkdir -p /srv/salt/files /etc/salt /etc/consul.d /etc/nomad.d /opt/consul /etc/fabio"
+                "sudo mkdir -p /srv/salt/files /etc/salt /etc/consul.d /etc/nomad.d /opt/consul"
             ]
         },
         {
