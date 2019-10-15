@@ -13,12 +13,7 @@ Param
     [string]$AccountJson
 )
 
-Write-Output $Query
-$InputJson = $Query | ConvertFrom-Json
-
-#Write-Output "Running Packer Script..."
-
-$command = "packer build -var 'project={0}' -var 'image_suffix={1}' -var 'ssh_username={2}' -var 'account_json_path={3}' packer.json" -f $Project, $ImageSuffix, $SSHUser, $InputJson.AccountJson
+$command = "packer build -var 'project={0}' -var 'image_suffix={1}' -var 'ssh_username={2}' -var 'account_json_path={3}' packer.json" -f $Project, $ImageSuffix, $SSHUser, $AccountJson
 $output = Invoke-Expression $command | Out-String
 
 $server = $output | Select-String -Pattern 'hashi-server-[^\s]+' -AllMatches
