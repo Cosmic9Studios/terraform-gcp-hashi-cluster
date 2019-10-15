@@ -5,6 +5,9 @@ An opinionated terraform module to setup hashicorp clients and servers on google
     * GCP Account 
     * Godaddy Account (This may change in the future if requested)
 
+*PLEASE NOTE: Packer runs as a data source meaning that the first time you run this module it's going to take a while with no output. DO NOT stop the process, just let it run.
+After the packer images are created terraform will continue to run.*
+
 # How to use
 
 **variables:**
