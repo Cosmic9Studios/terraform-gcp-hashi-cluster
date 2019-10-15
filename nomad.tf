@@ -1,6 +1,6 @@
 module "nomad" {
     source = "git::https://github.com/Cosmic9Studios/terraform-nomad-job.git?ref=v2.0.0"
-    address = var.nomad_address
+    address = "http://nomad.${var.domains[0]}"
     data = [
         {
             file_path = "${path.module}/nomad/fabio.nomad"

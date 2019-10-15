@@ -10,7 +10,23 @@ locals {
             paths = ["/ui/", "/v1/"]
             port = 4646
         }
+
+        vault = {
+            paths = ["/ui/vault"]
+            port = 8200
+        }
+
+        consul = {
+            paths = ["/consul/"]
+            port = 8500
+        }
     }
+
+    domains = concat(var.domains, 
+        [for domain in var.domains : "nomad.${domain}"],
+        [for domain in var.domains : "consul.${domain}"],
+        [for domain in var.domains : "vault.${domain}"]
+    )
 }
 
 resource "google_compute_instance_template" "client" {
@@ -18,7 +34,7 @@ resource "google_compute_instance_template" "client" {
   description = "Created with Terraform"
 
   disk {
-    source_image = "${var.project}/hashi-client-${data.archive_file.init.output_md5}"
+    source_image = "${var.project}/${data.external.run_packer.result["client"]}"
     auto_delete  = true
     boot         = true
   }
@@ -47,8 +63,6 @@ resource "google_compute_instance_template" "client" {
     sudo pm2 start /scripts/nomad.sh --wait-ready --listen-timeout 15000
     sudo pm2 start /scripts/consul.sh --wait-ready --listen-timeout 15000
   EOT
-
-  depends_on = [null_resource.packer_build]
 }
 
 resource "google_compute_global_address" "global_ip" {
@@ -89,12 +103,16 @@ resource "google_compute_instance_group_manager" "client" {
 
 resource "google_compute_managed_ssl_certificate" "client_cert" {
   provider = "google-beta"
-  count = length(var.domains)
+  count = length(local.domains)
 
-  name = "${split(".", var.domains[count.index])[0]}-cert"
+  name = replace(local.domains[count.index], ".", "-")
 
   managed {
-    domains = ["${var.domains[count.index]}"]
+    domains = ["${local.domains[count.index]}"]
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -107,6 +125,30 @@ resource "godaddy_domain_record" "default" {
     name = "www"
     type = "CNAME"
     data = "@"
+    ttl = 3600
+    priority = 0
+  }
+
+  record {
+    name = "nomad"
+    type = "A"
+    data = "${google_compute_global_address.global_ip.address}"
+    ttl = 3600
+    priority = 0
+  }
+
+  record {
+    name = "consul"
+    type = "A"
+    data = "${google_compute_global_address.global_ip.address}"
+    ttl = 3600
+    priority = 0
+  }
+
+  record {
+    name = "vault"
+    type = "A"
+    data = "${google_compute_global_address.global_ip.address}"
     ttl = 3600
     priority = 0
   }
@@ -147,20 +189,28 @@ resource "google_compute_url_map" "services" {
 
   host_rule {
     hosts        = ["*"]
-    path_matcher = "allpaths"
+    path_matcher = "defaultpaths"
   }
 
   path_matcher {
-    name            = "allpaths"
+    name            = "defaultpaths"
     default_service = google_compute_backend_service.services["fabiolb"].self_link
+  }
 
-    dynamic "path_rule" {
-        for_each = local.services
-        content {
-            paths = formatlist("%s*", path_rule.value["paths"])
-            service = google_compute_backend_service.services[path_rule.key].self_link
-        }
-    }
+  dynamic "host_rule" {
+      for_each = local.domains
+      content {
+          hosts = ["${host_rule.value}"]
+          path_matcher = "${contains(keys(local.services), split(".", host_rule.value)[0]) ? split(".", host_rule.value)[0] : "fabiolb"}"
+      }
+  }
+
+  dynamic "path_matcher" {
+      for_each = local.services
+      content {
+          name = path_matcher.key
+          default_service = google_compute_backend_service.services[path_matcher.key].self_link
+      }
   }
 }
 

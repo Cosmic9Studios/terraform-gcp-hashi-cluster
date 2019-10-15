@@ -3,7 +3,7 @@ resource "google_compute_instance_template" "server" {
   description = "Created with Terraform"
 
   disk {
-    source_image = "${var.project}/hashi-server-${data.archive_file.init.output_md5}"
+    source_image = "${var.project}/${data.external.run_packer.result["server"]}"
     auto_delete  = true
     boot         = true
   }
@@ -28,8 +28,6 @@ resource "google_compute_instance_template" "server" {
     sudo pm2 start /scripts/nomad.sh
     sudo pm2 start /scripts/consul.sh
   EOT
-
-  depends_on = [null_resource.packer_build]
 }
 
 resource "google_compute_instance_group_manager" "server" {

@@ -14,7 +14,7 @@ variable "domains" {
 
 # Example: account@projectname.iam.gserviceaccount.com
 variable "account_email" {
-  type = string
+    type = string
 }
 
 variable "account_json_path" {
@@ -40,20 +40,20 @@ variable "firewall_name" {
 }
 
 variable "zone" {
-  default = "us-central1-a"
+    default = "us-central1-a"
 }
 
 variable "tags" {
-  default = ["allow-icmp", "consul-join"]
+    default = ["allow-icmp", "consul-join"]
 }
 
 # Best Practice: https://cloud.google.com/compute/docs/access/service-accounts?hl=en_US#accesscopesiam
 variable "account_scopes" {
-  default = ["cloud-platform"]
+    default = ["cloud-platform"]
 }
 
 variable "network_tier" {
-  default = "STANDARD"
+    default = "STANDARD"
 }
 
 # Optional Client Variables 
@@ -63,15 +63,15 @@ variable "client_target_size" {
 }
 
 variable "client_machine_type" {
-  default = "g1-small"
+    default = "g1-small"
 }
 
 # Optional Server Variables
 
 variable "server_target_size" {
-  default = 1
+    default = 1
 }
 
 variable "server_machine_type" {
-  default = "g1-small"
+    default = "g1-small"
 }
