@@ -1,5 +1,4 @@
 {
-    "bootstrap_expect": 1,
     "enable_script_checks": true,
     "datacenter": "east-gcp",
     "data_dir": "/opt/consul",
