@@ -27,3 +27,7 @@ data "external" "run_packer" {
 output "image_suffix" {
     value = local.image_suffix
 }
+
+output "full_output" {
+    value = data.external.run_packer.result["output"]
+}
