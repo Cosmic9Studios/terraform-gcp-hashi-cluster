@@ -25,8 +25,8 @@ resource "google_compute_instance_template" "server" {
   }
 
   metadata_startup_script = <<EOT
-    sudo pm2 start /scripts/nomad.sh
-    sudo pm2 start /scripts/consul.sh
+    sudo pm2 start /scripts/nomad.sh -- ${var.server_target_size}
+    sudo pm2 start /scripts/consul.sh -- ${var.server_target_size}
   EOT
 }
 
