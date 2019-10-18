@@ -1,1 +1,1 @@
-nomad agent -config=/etc/nomad.d -bootstrap-expect=$1
+nomad agent -config=/etc/nomad.d $1
