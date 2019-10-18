@@ -13,6 +13,10 @@ resource "google_compute_instance_template" "server" {
 
   network_interface {
     network = google_compute_network.default.name
+    access_config {
+      nat_ip       = ""
+      network_tier = var.network_tier
+    }
   }
 
   service_account {
