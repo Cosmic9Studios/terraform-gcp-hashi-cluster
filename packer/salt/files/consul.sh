@@ -1,1 +1,1 @@
-consul agent -config-dir=/etc/consul.d -ui -ui-content-path /consul/
+consul agent -config-dir=/etc/consul.d -ui -ui-content-path /consul/ -bootstrap-expect $1

@@ -60,8 +60,8 @@ resource "google_compute_instance_template" "client" {
   }
 
   metadata_startup_script = <<EOT
-    sudo pm2 start /scripts/nomad.sh --wait-ready --listen-timeout 15000
-    sudo pm2 start /scripts/consul.sh --wait-ready --listen-timeout 15000
+    sudo pm2 start /scripts/nomad.sh --wait-ready --listen-timeout 15000 -- ${var.client_target_size}
+    sudo pm2 start /scripts/consul.sh --wait-ready --listen-timeout 15000 -- ${var.client_target_size}
   EOT
 }
 
