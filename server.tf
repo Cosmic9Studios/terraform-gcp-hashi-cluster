@@ -26,7 +26,7 @@ resource "google_compute_instance_template" "server" {
 
   metadata_startup_script = <<EOT
     sudo pm2 start /scripts/nomad.sh -- -bootstrap-expect=${var.server_target_size}
-    sudo pm2 start /scripts/consul.sh -- -bootstrap-expect ${var.server_target_size}
+    sudo pm2 start /scripts/consul.sh -- "-bootstrap-expect ${var.server_target_size}"
   EOT
 }
 
