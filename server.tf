@@ -9,7 +9,7 @@ resource "google_compute_instance_template" "server" {
   }
 
   tags         = var.tags
-  machine_type = var.client_machine_type
+  machine_type = var.server_machine_type
 
   network_interface {
     network = google_compute_network.default.name
@@ -29,8 +29,8 @@ resource "google_compute_instance_template" "server" {
   }
 
   metadata_startup_script = <<EOT
-    sudo pm2 start /scripts/nomad.sh -- -bootstrap-expect=${var.server_target_size}
-    sudo pm2 start /scripts/consul.sh -- "-bootstrap-expect ${var.server_target_size}"
+    sudo pm2 start --wait-ready --listen-timeout 15000 /scripts/nomad.sh -- -bootstrap-expect=${var.server_target_size}
+    sudo pm2 start --wait-ready --listen-timeout 15000 /scripts/consul.sh -- "-bootstrap-expect ${var.server_target_size}"
   EOT
 }
 

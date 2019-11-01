@@ -9,7 +9,7 @@
             "ssh_username": "{{user `ssh_username`}}",
             "instance_name": "hashi-server-{{user `image_suffix`}}",
             "image_name": "hashi-server-{{user `image_suffix`}}",
-            "image_family": "hashi-server",
+            "image_family": "hashi",
             "zone": "us-central1-a",
             "disable_default_service_account": true
         },
@@ -22,7 +22,7 @@
             "ssh_username": "{{user `ssh_username`}}",
             "instance_name": "hashi-client-{{user `image_suffix`}}",
             "image_name": "hashi-client-{{user `image_suffix`}}",
-            "image_family": "hashi-client",
+            "image_family": "hashi",
             "zone": "us-central1-a",
             "disable_default_service_account": true
         }

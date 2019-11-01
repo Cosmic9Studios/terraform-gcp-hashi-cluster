@@ -1,11 +1,11 @@
+
 datacenter = "dc1"
-data_dir = "/etc/nomad.d"
+data_dir  = "/var/lib/nomad"
 
 client {
   enabled = true
-  server_join {
-    retry_join = ["provider=gce tag_value=consul-join"]
-    retry_interval = "15s"
-  }
 }
 
+consul {
+  address = "0.0.0.0:8500"
+}

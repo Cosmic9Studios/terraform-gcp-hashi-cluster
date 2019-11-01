@@ -1,9 +1,5 @@
 # Mandatory Variables
 
-variable "environment" { 
-    type = string
-}
-
 variable "project" {
     type = string
 }
@@ -22,6 +18,10 @@ variable "account_json_path" {
 }
 
 variable "ssh_username" {
+    type = string
+}
+
+variable "vault_bucket_name" {
     type = string
 }
 

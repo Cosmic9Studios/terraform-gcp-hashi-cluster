@@ -215,7 +215,7 @@ resource "google_compute_url_map" "services" {
 }
 
 resource "google_compute_target_https_proxy" "default" {
-  name             = "default-https-proxy"
+  name             = "https-proxy"
   url_map          = google_compute_url_map.services.self_link
   ssl_certificates = google_compute_managed_ssl_certificate.client_cert.*.self_link
 }
@@ -226,7 +226,7 @@ resource "google_compute_target_http_proxy" "http" {
 }
 
 resource "google_compute_global_forwarding_rule" "default" {
-  name       = "default-global-rule"
+  name       = "ssl-global-rule"
   target     = google_compute_target_https_proxy.default.self_link
   ip_address = google_compute_global_address.global_ip.address
   port_range = "443"

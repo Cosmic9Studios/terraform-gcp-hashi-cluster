@@ -12,6 +12,6 @@ resource "google_kms_crypto_key" "crypto_key" {
 }
 
 resource "google_storage_bucket" "vault" {
-  name     = "c9s-vault"
+  name     = var.vault_bucket_name
   location = "US"
 }
