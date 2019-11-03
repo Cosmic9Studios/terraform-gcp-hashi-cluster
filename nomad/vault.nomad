@@ -31,7 +31,7 @@ job "vault" {
                     disable_mlock = true
 
                     storage "gcs" {
-                        bucket = "c9s-vault"
+                        bucket = "${vault_bucket}"
                         ha_enabled = "true"
                     }
 

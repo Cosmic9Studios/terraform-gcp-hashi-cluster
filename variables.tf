@@ -27,6 +27,10 @@ variable "vault_bucket_name" {
 
 # Optional Global Variables
 
+variable "subdomain" {
+    default = ""
+}
+
 variable "nomad_address" {
     default = ""
 }

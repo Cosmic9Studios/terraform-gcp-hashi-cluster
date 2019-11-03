@@ -22,10 +22,11 @@ locals {
         }
     }
 
-    domains = concat(var.domains, 
-        [for domain in var.domains : "nomad.${domain}"],
-        [for domain in var.domains : "consul.${domain}"],
-        [for domain in var.domains : "vault.${domain}"]
+    domains = concat(
+        [for domain in var.domains : "${join(".", compact([var.subdomain, domain]))}"],
+        [for domain in var.domains : "${join(".", compact(["nomad", var.subdomain, domain]))}"],
+        [for domain in var.domains : "${join(".", compact(["consul", var.subdomain, domain]))}"],
+        [for domain in var.domains : "${join(".", compact(["vault", var.subdomain, domain]))}"]
     )
 }
 
@@ -130,7 +131,7 @@ resource "godaddy_domain_record" "default" {
   }
 
   record {
-    name = "nomad"
+    name = coalesce(var.subdomain, "@")
     type = "A"
     data = "${google_compute_global_address.global_ip.address}"
     ttl = 3600
@@ -138,7 +139,7 @@ resource "godaddy_domain_record" "default" {
   }
 
   record {
-    name = "consul"
+    name = join(".", compact(["nomad", var.subdomain]))
     type = "A"
     data = "${google_compute_global_address.global_ip.address}"
     ttl = 3600
@@ -146,7 +147,15 @@ resource "godaddy_domain_record" "default" {
   }
 
   record {
-    name = "vault"
+    name = join(".", compact(["consul", var.subdomain]))
+    type = "A"
+    data = "${google_compute_global_address.global_ip.address}"
+    ttl = 3600
+    priority = 0
+  }
+
+  record {
+    name = join(".", compact(["vault", var.subdomain]))
     type = "A"
     data = "${google_compute_global_address.global_ip.address}"
     ttl = 3600
