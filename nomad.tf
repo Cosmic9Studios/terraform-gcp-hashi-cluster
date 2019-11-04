@@ -16,5 +16,9 @@ module "nomad" {
         }
     ]
 
-    nomad_depends_on = [google_compute_instance_group_manager.client, google_compute_managed_ssl_certificate.client_cert]
+    nomad_depends_on = [
+        google_compute_instance_group_manager.client, 
+        google_compute_managed_ssl_certificate.client_cert,
+        godaddy_domain_record.default
+    ]
 }

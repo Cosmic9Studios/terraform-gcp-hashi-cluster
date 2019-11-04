@@ -120,7 +120,6 @@ resource "google_compute_managed_ssl_certificate" "client_cert" {
 resource "godaddy_domain_record" "default" {
   count = length(var.domains)
   domain      = var.domains[count.index]
-  addresses   = [google_compute_global_address.global_ip.address]
 
   record {
     name = "www"
