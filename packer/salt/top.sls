@@ -4,6 +4,7 @@ client:
     - docker
     - consul
     - nomad
+    - network
 
 server:
   '*': 
@@ -11,3 +12,4 @@ server:
     - docker
     - consul
     - nomad
+    - network

@@ -1,3 +1,5 @@
 sudo docker ps -a (Get the container id)
 sudo docker exec -it {{ container_id }} /bin/sh 
 vault operator init -recovery-shares=1 -recovery-threshold=1
+
+vault write auth/gcp/role/my-iam-role type="iam" policies="dev,prod" bound_service_accounts="lynxbot@pixelynx-staging.iam.gserviceaccount.com"
